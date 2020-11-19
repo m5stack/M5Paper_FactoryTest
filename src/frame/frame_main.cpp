@@ -138,8 +138,6 @@ Frame_Main::Frame_Main(void): Frame_Base(false)
         _key[i + 4] = new EPDGUI_Button("测试", 20 + i * 136, 240, KEY_W, KEY_H);
     }
 
-    _key[8] = new EPDGUI_Button(20, 390, KEY_W, KEY_H);
-
     _key[kKeySetting]->CanvasNormal()->pushImage(0, 0, 92, 92, ImageResource_main_icon_setting_92x92);
     *(_key[kKeySetting]->CanvasPressed()) = *(_key[kKeySetting]->CanvasNormal());
     _key[kKeySetting]->CanvasPressed()->ReverseColor();
@@ -294,6 +292,7 @@ void Frame_Main::StatusBar(m5epd_update_mode_t mode)
     sprintf(buf, "%d%%", (int)(battery * 100));
     _bar->drawString(buf, 498 - 10, 27);
     _bar->fillRect(498 + 3, 8 + 10, px, 13, 15);
+    // _bar->pushImage(498, 8, 32, 32, 2, ImageResource_status_bar_battery_charging_32x32);
 
     // Time
     rtc_time_t time_struct;
