@@ -64,6 +64,18 @@ uint16_t global_reader_textsize = 32;
 uint8_t global_time_synced = false;
 uint8_t global_ttf_file_loaded = false;
 uint8_t global_init_status = 0xFF;
+int8_t global_timezone = 8;
+
+
+int8_t GetTimeZone(void)
+{
+    return global_timezone;
+}
+
+void SetTimeZone(int8_t time_zone)
+{
+    global_timezone = time_zone;
+}
 
 void SetInitStatus(uint8_t idx, uint8_t val)
 {
@@ -147,6 +159,7 @@ esp_err_t LoadSetting(void)
     NVS_CHECK(nvs_get_u16(nvs_arg, "Wallpaper", &global_wallpaper));
     NVS_CHECK(nvs_get_u8(nvs_arg, "Language", &global_language));
     NVS_CHECK(nvs_get_u8(nvs_arg, "Timesync", &global_time_synced));
+    nvs_get_i8(nvs_arg, "timezone", &global_timezone);
 
     if(global_wallpaper >= WALLPAPER_NUM)
     {
@@ -172,6 +185,7 @@ esp_err_t SaveSetting(void)
     NVS_CHECK(nvs_set_u16(nvs_arg, "Wallpaper", global_wallpaper));
     NVS_CHECK(nvs_set_u8(nvs_arg, "Language", global_language));
     NVS_CHECK(nvs_set_u8(nvs_arg, "Timesync", global_time_synced));
+    NVS_CHECK(nvs_set_i8(nvs_arg, "timezone", global_timezone));
     NVS_CHECK(nvs_set_str(nvs_arg, "ssid", global_wifi_ssid.c_str()));
     NVS_CHECK(nvs_set_str(nvs_arg, "pswd", global_wifi_password.c_str()));
     NVS_CHECK(nvs_commit(nvs_arg));
@@ -204,7 +218,7 @@ String GetWifiPassword(void)
 bool SyncNTPTime(void)
 {
     const char *ntpServer = "time.cloudflare.com";
-    configTime(8 * 3600, 0, ntpServer);
+    configTime(global_timezone * 3600, 0, ntpServer);
 
     struct tm timeInfo;
     if (getLocalTime(&timeInfo))

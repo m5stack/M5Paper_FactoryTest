@@ -18,6 +18,12 @@ private:
     EPDGUI_Button *_key_shutdown;
     EPDGUI_Button *_key_restart;
     EPDGUI_Button *_key_syncntp;
+
+    EPDGUI_Button *key_timezone_plus;
+    EPDGUI_Button *key_timezone_reset;
+    EPDGUI_Button *key_timezone_minus;
+    int _timezone;
+    M5EPD_Canvas *_timezone_canvas;
 };
 
 #endif //_FRAME_SETTING_H_

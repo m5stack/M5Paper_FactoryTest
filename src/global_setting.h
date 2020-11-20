@@ -28,6 +28,8 @@ String GetWifiSSID(void);
 String GetWifiPassword(void);
 uint8_t isWiFiConfiged(void);
 bool SyncNTPTime(void);
+int8_t GetTimeZone(void);
+void SetTimeZone(int8_t time_zone);
 
 uint16_t GetTextSize();
 void SetTextSize(uint16_t size);
