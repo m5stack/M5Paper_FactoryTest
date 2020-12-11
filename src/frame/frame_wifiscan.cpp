@@ -316,7 +316,7 @@ void Frame_WifiScan::Connect()
 
     SetWifi(_connect_ssid, _connect_password);
     // SyncNTPTime();
-    scan();
+    //scan(); //This cause a reboot after WIFI is connected
 }
 
 void Frame_WifiScan::SetConnected(String ssid, int rssi)
