@@ -114,6 +114,7 @@ void Frame_WifiScan::DrawItem(EPDGUI_Button *btn, String ssid, int rssi)
 
 int Frame_WifiScan::run()
 {
+    Frame_Base::run();
     if(_connect)
     {
         _connect = false;

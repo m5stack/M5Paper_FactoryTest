@@ -24,4 +24,8 @@ void EPDGUI_AddFrameArg(String name, int n, void* arg);
 Frame_Base* EPDGUI_GetFrame(String name);
 void EPDGUI_SetAutoUpdate(bool isAuto);
 
+extern uint32_t g_last_active_time_millis;
+
+void EPDGUI_UpdateGlobalLastActiveTime();
+
 #endif //__EPDGUI_H

@@ -54,6 +54,7 @@ void Frame_PictureViewer::err(String info)
 
 int Frame_PictureViewer::run()
 {
+    Frame_Base::run();
     if(_is_first)
     {
         _is_first = false;

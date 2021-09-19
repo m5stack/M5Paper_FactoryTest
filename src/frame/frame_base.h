@@ -21,11 +21,16 @@ public:
     uint32_t GetFrameID() {return _frame_id;}
 protected:
     static void exit_cb(epdgui_args_vector_t &args);
+    void UpdateLastActiveTime();
     String _frame_name;
     int _is_run = 1;
     M5EPD_Canvas *_canvas_title = NULL;
+    M5EPD_Canvas *_canvas_footer = NULL;
     EPDGUI_Button *_key_exit = NULL;
     uint32_t _frame_id;
+private:
+    bool _shutdown_prompt_is_shown = false;
+    void CheckAutoPowerSave();
 };
 
 
