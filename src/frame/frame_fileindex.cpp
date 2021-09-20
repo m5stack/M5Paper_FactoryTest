@@ -166,7 +166,7 @@ void Frame_FileIndex::listDir(fs::FS &fs, const char *dirname)
         btn->CanvasNormal()->setTextDatum(CR_DATUM);
 
         String suffix = filename.substring(filename.lastIndexOf("."));
-        if(suffix.indexOf("txt") >= 0)
+        if (suffix.indexOf("txt") >= 0 || suffix.indexOf("TXT") >= 0)
         {
             btn->CanvasNormal()->pushImage(15, 14, 32, 32, ImageResource_item_icon_file_text_32x32);
             btn->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0, btn);
