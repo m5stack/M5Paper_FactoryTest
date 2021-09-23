@@ -9,16 +9,7 @@ const uint16_t kTimeZoneY = 520;
 
 void key_shutdown_cb(epdgui_args_vector_t &args)
 {
-    M5.EPD.WriteFullGram4bpp(GetWallpaper());
-    M5.EPD.UpdateFull(UPDATE_MODE_GC16);
-    M5.EPD.UpdateFull(UPDATE_MODE_GC16);
-    SaveSetting();
-    delay(600);
-    M5.disableEPDPower();
-    M5.disableEXTPower();
-    M5.disableMainPower();
-    esp_deep_sleep_start();
-    while(1);
+    Shutdown();
 }
 
 void key_restart_cb(epdgui_args_vector_t &args)

@@ -313,3 +313,18 @@ void LoadingAnime_32x32_Stop()
     xSemaphoreGive(_xSemaphore_LoadingAnime);
     delay(200);
 }
+
+void Shutdown()
+{
+    log_d("Now the system is shutting down.");
+    M5.EPD.WriteFullGram4bpp(GetWallpaper());
+    M5.EPD.UpdateFull(UPDATE_MODE_GC16);
+    M5.EPD.UpdateFull(UPDATE_MODE_GC16);
+    SaveSetting();
+    delay(600);
+    M5.disableEPDPower();
+    M5.disableEXTPower();
+    M5.disableMainPower();
+    esp_deep_sleep_start();
+    while(1);
+}

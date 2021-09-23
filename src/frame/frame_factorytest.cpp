@@ -234,6 +234,7 @@ void Frame_FactoryTest::scan(String *ssid, int32_t *rssi)
 
 int Frame_FactoryTest::run()
 {
+    Frame_Base::run();
     uint16_t pass_flag = _pass_flag;
     char buf[100];
     // POS

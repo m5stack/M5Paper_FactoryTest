@@ -142,6 +142,7 @@ int Frame_Keyboard::init(epdgui_args_vector_t &args)
 
 int Frame_Keyboard::run(void)
 {
+    Frame_Base::run();
     inputbox->AddText(keyboard->getData());
     return 1;
 }

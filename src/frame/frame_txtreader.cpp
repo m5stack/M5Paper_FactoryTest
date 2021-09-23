@@ -88,6 +88,7 @@ uint32_t Frame_txtReader::renderText(uint32_t cursor, uint32_t length, M5EPD_Can
 
 int Frame_txtReader::run()
 {
+    Frame_Base::run();
     if(_is_first)
     {
         LoadingAnime_32x32_Start(254, 500);
@@ -123,6 +124,7 @@ int Frame_txtReader::run()
         M5.update();
         if(M5.BtnR.wasReleased() || (_key_operation == 1))
         {
+            EPDGUI_UpdateGlobalLastActiveTime();
             _key_operation = 0;
             if(_page != _page_end)
             {
@@ -156,6 +158,7 @@ int Frame_txtReader::run()
         }
         else if(M5.BtnL.wasReleased() || (_key_operation == -1))
         {
+            EPDGUI_UpdateGlobalLastActiveTime();
             _key_operation = 0;
             if(_page > 0)
             {

@@ -82,6 +82,7 @@ int Frame_WifiPassword::init(epdgui_args_vector_t &args)
 
 int Frame_WifiPassword::run(void)
 {
+    Frame_Base::run();
     String data = keyboard->getData();
     if(data.indexOf("\n") >= 0)
     {

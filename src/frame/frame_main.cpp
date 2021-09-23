@@ -326,6 +326,7 @@ int Frame_Main::init(epdgui_args_vector_t &args)
 
 int Frame_Main::run()
 {
+    Frame_Base::run();
     StatusBar(UPDATE_MODE_GL16);
     return 1;
 }

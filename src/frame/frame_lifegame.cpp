@@ -171,9 +171,11 @@ void LifeGame_NextGen(void *pvParameters)
 
 int Frame_Lifegame::run()
 {
+    Frame_Base::run();
     M5.update();
     if(M5.BtnP.wasReleased())
     {
+        EPDGUI_UpdateGlobalLastActiveTime();
         LifeGame_RandomCell();
     }
     xTaskCreatePinnedToCore(LifeGame_NextGen, "LifeGame_NextGen", 4096, NULL, 1, NULL, 0);

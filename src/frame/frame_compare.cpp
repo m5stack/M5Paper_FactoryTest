@@ -145,6 +145,7 @@ Frame_Compare::~Frame_Compare(void)
 
 int Frame_Compare::run()
 {
+    Frame_Base::run();
     switch(_update_flag)
     {
         case 1:
