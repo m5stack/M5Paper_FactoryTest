@@ -92,7 +92,7 @@ void EPDGUI_Run(Frame_Base* frame)
         if((frame->isRun() == 0) || (frame->run() == 0))
         {
             frame->exit();
-            // M5.EPD.Clear();
+            M5.EPD.Clear(true);
             log_d("Exit %s", frame->GetFrameName().c_str());
             if(wait_for_delete != NULL)
             {

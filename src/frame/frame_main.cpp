@@ -290,7 +290,7 @@ void Frame_Main::StatusBar(m5epd_update_mode_t mode)
     }
     uint8_t px = battery * 25;
     sprintf(buf, "%d%%", (int)(battery * 100));
-    _bar->drawString(buf, 498 - 10, 27);
+    // _bar->drawString(buf, 498 - 10, 27);
     _bar->fillRect(498 + 3, 8 + 10, px, 13, 15);
     // _bar->pushImage(498, 8, 32, 32, 2, ImageResource_status_bar_battery_charging_32x32);
 

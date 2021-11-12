@@ -6,6 +6,8 @@
 #include "resources/binaryttf.h"
 #include <WiFi.h>
 
+M5EPD_Canvas _initcanvas(&M5.EPD);
+
 QueueHandle_t xQueue_Info = xQueueCreate(20, sizeof(uint32_t));
 
 void WaitForUser(void)
@@ -19,6 +21,33 @@ void WaitForUser(void)
             SysInit_UpdateInfo("$RESUME");
             return;
         }
+    }
+}
+
+void Screen_Test(void) {
+    Serial.println("Start Screen Life Test...");
+    _initcanvas.createCanvas(540, 960);
+    _initcanvas.setTextSize(4);
+    delay(1000);
+    float min =0;
+    while (1)
+    {
+        for(uint8_t pos=0; pos<2; pos++) {
+            for(uint8_t index=0; index<16; index++) {
+                _initcanvas.fillRect(0, index*60, 540, 60, index);
+            }
+            int possition = random(960);
+            _initcanvas.drawString("Test Time: "+String(min)+ "min",20, possition);
+            _initcanvas.pushCanvas(0,0,UPDATE_MODE_GC16);
+            delay(10000);
+            for(uint8_t index=0; index<16; index++) {
+                _initcanvas.fillRect(0, index*60, 540, 60, (15-index));
+            }
+            _initcanvas.drawString("Test Time: "+String(min)+ "min",20, possition);
+            _initcanvas.pushCanvas(0,0,UPDATE_MODE_GC16);
+            delay(10000);
+        }
+        min+=1;
     }
 }
 
@@ -47,6 +76,14 @@ void SysInit_Start(void)
     M5.EPD.Clear(true);
     M5.EPD.SetRotation(M5EPD_Driver::ROTATE_90);
     M5.TP.SetRotation(GT911::ROTATE_90);
+
+    if (!digitalRead(39)){
+        delay(10);
+        if (!digitalRead(39))
+        {
+            Screen_Test();
+        }
+    }
 
     disableCore0WDT();
     xTaskCreatePinnedToCore(SysInit_Loading, "SysInit_Loading", 4096, NULL, 1, NULL, 0);
@@ -79,7 +116,6 @@ void SysInit_Start(void)
     M5.BatteryADCBegin();
     LoadSetting();
     
-    M5EPD_Canvas _initcanvas(&M5.EPD);
     if((!is_factory_test) && SD.exists("/font.ttf"))
     {
         _initcanvas.loadFont("/font.ttf", SD);
