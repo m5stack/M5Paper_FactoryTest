@@ -176,8 +176,8 @@ void Frame_FactoryTest::drawGrove(m5epd_update_mode_t mode)
 }
 
 bool Frame_FactoryTest::checkGrove(int sda, int scl)
-{
-    Wire1.begin(sda, scl, 10000);
+{   
+    Wire1.begin(sda, scl, 10000u);
     bool groveCheck = true;
 
     Wire1.beginTransmission(0x76);
