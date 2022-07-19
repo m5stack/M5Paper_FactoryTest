@@ -28,4 +28,4 @@ extern uint32_t g_last_active_time_millis;
 
 void EPDGUI_UpdateGlobalLastActiveTime();
 
-#endif //__EPDGUI_H
+#endif  //__EPDGUI_H
