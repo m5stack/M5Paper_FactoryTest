@@ -1,3 +1,4 @@
+#include <functional>
 #include "frame_fileindex.h"
 #include "frame_txtreader.h"
 #include "frame_pictureviewer.h"
@@ -74,30 +75,27 @@ void Frame_FileIndex::listDir(fs::FS &fs, const char *dirname) {
         return;
     }
 
-    std::vector<File> floders;
-    std::vector<File> files;
+    std::vector<String> floders;
+    std::vector<std::pair<String, size_t>> files;
 
-    File file = root.openNextFile();
-    while (file) {
+    for (File file = root.openNextFile(); file; file = root.openNextFile()) {
         if (file.isDirectory()) {
-            floders.push_back(file);
+            floders.push_back(String(file.name()));
         } else {
-            files.push_back(file);
+            files.push_back(std::make_pair(String(file.name()), file.size()));
         }
-        file = root.openNextFile();
     }
 
     for (int n = 0; n < floders.size(); n++) {
         if (_key_files.size() > MAX_BTN_NUM) {
             break;
         }
-        File file = floders[n];
         EPDGUI_Button *btn =
             new EPDGUI_Button(4, 100 + _key_files.size() * 60, 532, 61);
         _key_files.push_back(btn);
 
-        String filename(file.name());
-        filename = filename.substring(filename.lastIndexOf("/"));
+        String filename = floders[n];
+        filename        = filename.substring(filename.lastIndexOf("/") + 1);
         if (filename.length() > 19) {
             filename = filename.substring(0, 19) + "...";
         }
@@ -107,7 +105,7 @@ void Frame_FileIndex::listDir(fs::FS &fs, const char *dirname) {
         btn->CanvasNormal()->setTextDatum(CL_DATUM);
         btn->CanvasNormal()->setTextColor(15);
         btn->CanvasNormal()->drawString(filename, 47 + 13, 35);
-        btn->SetCustomString(file.name());
+        btn->SetCustomString(floders[n]);
         btn->CanvasNormal()->setTextDatum(CR_DATUM);
         btn->CanvasNormal()->pushImage(
             15, 14, 32, 32, ImageResource_item_icon_file_floder_32x32);
@@ -125,13 +123,12 @@ void Frame_FileIndex::listDir(fs::FS &fs, const char *dirname) {
         if (_key_files.size() > MAX_BTN_NUM) {
             break;
         }
-        File file = files[n];
         EPDGUI_Button *btn =
             new EPDGUI_Button(4, 100 + _key_files.size() * 60, 532, 61);
         _key_files.push_back(btn);
 
-        String filename(file.name());
-        filename = filename.substring(filename.lastIndexOf("/"));
+        String filename = files[n].first;
+        filename        = filename.substring(filename.lastIndexOf("/") + 1);
         if (filename.length() > 19) {
             filename = filename.substring(0, 19) + "...";
         }
@@ -141,7 +138,7 @@ void Frame_FileIndex::listDir(fs::FS &fs, const char *dirname) {
         btn->CanvasNormal()->setTextDatum(CL_DATUM);
         btn->CanvasNormal()->setTextColor(15);
         btn->CanvasNormal()->drawString(filename, 47 + 13, 35);
-        btn->SetCustomString(file.name());
+        btn->SetCustomString(files[n].first);
         btn->CanvasNormal()->setTextDatum(CR_DATUM);
 
         String suffix = filename.substring(filename.lastIndexOf("."));
@@ -168,8 +165,9 @@ void Frame_FileIndex::listDir(fs::FS &fs, const char *dirname) {
             btn->SetEnable(false);
         }
 
+        size_t filesize = files[n].second;
         char buf[50];
-        sprintf(buf, "%.2f KiB", file.size() / 1024.0f);
+        sprintf(buf, "%.2f KiB", filesize / 1024.0f);
         btn->CanvasNormal()->drawString(buf, 532 - 15, 35);
         *(btn->CanvasPressed()) = *(btn->CanvasNormal());
         btn->CanvasPressed()->ReverseColor();
