@@ -95,7 +95,7 @@ void Frame_FileIndex::listDir(fs::FS &fs, const char *dirname) {
         _key_files.push_back(btn);
 
         String filename = floders[n];
-        filename = filename.substring(filename.lastIndexOf("/") + 1);
+        filename        = filename.substring(filename.lastIndexOf("/") + 1);
         if (filename.length() > 19) {
             filename = filename.substring(0, 19) + "...";
         }
@@ -128,7 +128,7 @@ void Frame_FileIndex::listDir(fs::FS &fs, const char *dirname) {
         _key_files.push_back(btn);
 
         String filename = files[n].first;
-        filename = filename.substring(filename.lastIndexOf("/") + 1);
+        filename        = filename.substring(filename.lastIndexOf("/") + 1);
         if (filename.length() > 19) {
             filename = filename.substring(0, 19) + "...";
         }
