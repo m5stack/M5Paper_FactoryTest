@@ -62,7 +62,7 @@ void key_synctime_cb(epdgui_args_vector_t &args) {
         title->pushCanvas(0, 8, UPDATE_MODE_NONE);
         tzone->pushCanvas(4, kTimeZoneY, UPDATE_MODE_NONE);
         EPDGUI_Draw(UPDATE_MODE_NONE);
-        while (!M5.TP.avaliable())
+        while (!M5.TP.available())
             ;
         M5.EPD.UpdateFull(UPDATE_MODE_GL16);
         return;
@@ -94,7 +94,7 @@ void key_synctime_cb(epdgui_args_vector_t &args) {
     title->pushCanvas(0, 8, UPDATE_MODE_NONE);
     tzone->pushCanvas(4, kTimeZoneY, UPDATE_MODE_NONE);
     EPDGUI_Draw(UPDATE_MODE_NONE);
-    while (!M5.TP.avaliable())
+    while (!M5.TP.available())
         ;
     M5.EPD.UpdateFull(UPDATE_MODE_GL16);
 }

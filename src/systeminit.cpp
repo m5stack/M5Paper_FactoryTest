@@ -83,12 +83,10 @@ void SysInit_Start(void) {
     }
 
     disableCore0WDT();
-    xTaskCreatePinnedToCore(SysInit_Loading, "SysInit_Loading", 4096, NULL, 1,
-                            NULL, 0);
+    xTaskCreatePinnedToCore(SysInit_Loading, "SysInit_Loading", 4096, NULL, 10, NULL, 1);
     // SysInit_UpdateInfo("Initializing SD card...");
     bool is_factory_test;
-    SPI.begin(14, 13, 12, 4);
-    ret = SD.begin(4, SPI, 20000000);
+    ret = SD.begin(4, *M5.EPD.GetSPI(), 20000000);
     if (ret == false) {
         is_factory_test = true;
         SetInitStatus(0, 0);
@@ -221,6 +219,8 @@ void SysInit_Loading(void *pvParameters) {
                 i = 0;
             }
         }
+
+        vTaskDelay(10);
 
         if (xQueueReceive(xQueue_Info, &p, 0)) {
             String str(p);

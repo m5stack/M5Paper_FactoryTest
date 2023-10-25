@@ -89,7 +89,7 @@ void EPDGUI_Run(Frame_Base* frame) {
             return;
         }
 
-        if (M5.TP.avaliable()) {
+        if (M5.TP.available()) {
             M5.TP.update();
             uint16_t is_finger_up = M5.TP.isFingerUp() ? 1 : 0;
             uint16_t pos_x        = M5.TP.readFingerX(0);
