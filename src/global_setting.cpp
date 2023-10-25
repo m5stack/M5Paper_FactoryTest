@@ -120,7 +120,6 @@ esp_err_t LoadSetting(void) {
     NVS_CHECK(nvs_get_u8(nvs_arg, "Language", &global_language));
     NVS_CHECK(nvs_get_u8(nvs_arg, "Timesync", &global_time_synced));
     nvs_get_i8(nvs_arg, "timezone", &global_timezone);
-
     if (global_wallpaper >= WALLPAPER_NUM) {
         global_wallpaper = DEFAULT_WALLPAPER;
     }
@@ -128,9 +127,14 @@ esp_err_t LoadSetting(void) {
     size_t length = 128;
     char buf[128];
     NVS_CHECK(nvs_get_str(nvs_arg, "ssid", buf, &length));
+    if (strlen(buf) == 0) {
+        nvs_close(nvs_arg);
+        return ESP_FAIL;
+    }
     global_wifi_ssid = String(buf);
     length           = 128;
     NVS_CHECK(nvs_get_str(nvs_arg, "pswd", buf, &length));
+    // Allow empty password
     global_wifi_password = String(buf);
     global_wifi_configed = true;
     nvs_close(nvs_arg);
