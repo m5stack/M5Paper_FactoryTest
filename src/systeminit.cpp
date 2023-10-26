@@ -82,8 +82,9 @@ void SysInit_Start(void) {
         }
     }
 
-    disableCore0WDT();
-    xTaskCreatePinnedToCore(SysInit_Loading, "SysInit_Loading", 4096, NULL, 10, NULL, 1);
+    xTaskCreatePinnedToCore(SysInit_Loading, "SysInit_Loading", 4096, NULL, 5, NULL, 1);
+    vTaskDelay(50);
+    vTaskPrioritySet(NULL, 10);
     // SysInit_UpdateInfo("Initializing SD card...");
     bool is_factory_test;
     ret = SD.begin(4, *M5.EPD.GetSPI(), 20000000);
@@ -104,6 +105,7 @@ void SysInit_Start(void) {
         SysInit_UpdateInfo("[ERROR] Failed to initialize Touch pad.");
         WaitForUser();
     }
+    taskYIELD();
 
     M5.BatteryADCBegin();
     LoadSetting();
@@ -117,12 +119,14 @@ void SysInit_Start(void) {
         SetLanguage(LANGUAGE_EN);
         is_factory_test = true;
     }
+    taskYIELD();
 
     if (is_factory_test) {
         SysInit_UpdateInfo("$OK");
     } else {
         SysInit_UpdateInfo("Initializing system...");
     }
+    taskYIELD();
 
     _initcanvas.createRender(26, 128);
 
@@ -164,14 +168,17 @@ void SysInit_Start(void) {
                     frame_wifiscan->SetConnected(GetWifiSSID(), WiFi.RSSI());
                     break;
                 }
+
+                vTaskDelay(500);
             }
         }
     }
 
     log_d("done");
 
-    while (uxQueueMessagesWaiting(xQueue_Info))
-        ;
+    while (uxQueueMessagesWaiting(xQueue_Info)) {
+        vTaskDelay(100);
+    }
 
     if (!is_factory_test) {
         SysInit_UpdateInfo("$OK");
@@ -210,6 +217,7 @@ void SysInit_Loading(void *pvParameters) {
     char *p;
     uint32_t time = 0;
     while (1) {
+        vTaskPrioritySet(NULL, 15);
         if (millis() - time > 250) {
             time = millis();
             LoadingIMG.pushImage(0, 0, 96, 96, kLD[i]);
@@ -219,8 +227,6 @@ void SysInit_Loading(void *pvParameters) {
                 i = 0;
             }
         }
-
-        vTaskDelay(10);
 
         if (xQueueReceive(xQueue_Info, &p, 0)) {
             String str(p);
@@ -252,6 +258,8 @@ void SysInit_Loading(void *pvParameters) {
                 Info.pushCanvas(0, kPosy, UPDATE_MODE_DU);
             }
         }
+        vTaskPrioritySet(NULL, 5);
+        vTaskDelay(10);
     }
     vTaskDelete(NULL);
 }

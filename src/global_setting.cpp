@@ -129,7 +129,10 @@ esp_err_t LoadSetting(void) {
     char buf[128];
     NVS_CHECK(nvs_get_str(nvs_arg, "ssid", buf, &length));
     global_wifi_ssid = String(buf);
-    length           = 128;
+    if (global_wifi_ssid.length() < 1) {
+        return ESP_FAIL;
+    }
+    length = 128;
     NVS_CHECK(nvs_get_str(nvs_arg, "pswd", buf, &length));
     global_wifi_password = String(buf);
     global_wifi_configed = true;
