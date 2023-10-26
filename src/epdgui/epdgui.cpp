@@ -134,12 +134,14 @@ void EPDGUI_MainLoop(void) {
         frame->init(frame_map[frame->GetFrameName()].args);
         EPDGUI_Run(frame);
     }
+    vTaskDelay(1);
 }
 
 void EPDGUI_AddFrame(String name, Frame_Base* frame) {
     frame_struct_t f;
     f.frame = frame;
     frame_map.insert(std::pair<String, frame_struct_t>(name, f));
+    vTaskDelay(1);
 }
 
 void EPDGUI_AddFrameArg(String name, int n, void* arg) {
