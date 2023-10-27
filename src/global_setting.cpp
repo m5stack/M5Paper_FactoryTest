@@ -174,7 +174,8 @@ String GetWifiPassword(void) {
 
 bool SyncNTPTime(void) {
     const char *ntpServer = "time.cloudflare.com";
-    configTime(global_timezone * 3600, 0, ntpServer);
+    const char *ntpServer_zh = "ntp.aliyun.com";
+    configTime(global_timezone * 3600, 0, global_language == LANGUAGE_ZH ? ntpServer_zh : ntpServer);
 
     struct tm timeInfo;
     if (getLocalTime(&timeInfo)) {
@@ -192,7 +193,7 @@ bool SyncNTPTime(void) {
         SetTimeSynced(1);
         return 1;
     }
-    log_d("Time Sync failed");
+    log_d("Time Sync failed, server is %s", global_language == LANGUAGE_ZH ? ntpServer_zh : ntpServer);
     return 0;
 }
 
