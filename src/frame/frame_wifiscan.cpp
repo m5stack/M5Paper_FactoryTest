@@ -169,11 +169,11 @@ int Frame_WifiScan::scan() {
         DrawItem(_key_wifi[cnt], ssid, WiFi.RSSI(idx));
         _key_wifi[cnt]->Draw(UPDATE_MODE_A2);
 
-        idx++;
         if (idx == wifi_num) {
             break;
         }
 
+        idx++;
         cnt++;
     }
 
