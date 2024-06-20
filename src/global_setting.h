@@ -3,6 +3,7 @@
 
 #include <M5EPD.h>
 #include <nvs.h>
+#include <esp_task_wdt.h>
 
 #define WALLPAPER_NUM 3
 

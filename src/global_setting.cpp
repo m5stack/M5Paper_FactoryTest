@@ -15,24 +15,19 @@ esp_err_t __espret__;
         return __espret__;      \
     }
 
-const uint8_t *wallpapers[] = {
-    ImageResource_wallpaper_m5stack_540x960,
-    ImageResource_wallpaper_engine_540x960,
-    ImageResource_wallpaper_penrose_triangle_540x960};
+const uint8_t *wallpapers[] = {ImageResource_wallpaper_m5stack_540x960, ImageResource_wallpaper_engine_540x960,
+                               ImageResource_wallpaper_penrose_triangle_540x960};
 
 const uint8_t *kIMGLoading[16] = {
-    ImageResource_item_loading_01_32x32, ImageResource_item_loading_02_32x32,
-    ImageResource_item_loading_03_32x32, ImageResource_item_loading_04_32x32,
-    ImageResource_item_loading_05_32x32, ImageResource_item_loading_06_32x32,
-    ImageResource_item_loading_07_32x32, ImageResource_item_loading_08_32x32,
-    ImageResource_item_loading_09_32x32, ImageResource_item_loading_10_32x32,
-    ImageResource_item_loading_11_32x32, ImageResource_item_loading_12_32x32,
-    ImageResource_item_loading_13_32x32, ImageResource_item_loading_14_32x32,
-    ImageResource_item_loading_15_32x32, ImageResource_item_loading_16_32x32};
+    ImageResource_item_loading_01_32x32, ImageResource_item_loading_02_32x32, ImageResource_item_loading_03_32x32,
+    ImageResource_item_loading_04_32x32, ImageResource_item_loading_05_32x32, ImageResource_item_loading_06_32x32,
+    ImageResource_item_loading_07_32x32, ImageResource_item_loading_08_32x32, ImageResource_item_loading_09_32x32,
+    ImageResource_item_loading_10_32x32, ImageResource_item_loading_11_32x32, ImageResource_item_loading_12_32x32,
+    ImageResource_item_loading_13_32x32, ImageResource_item_loading_14_32x32, ImageResource_item_loading_15_32x32,
+    ImageResource_item_loading_16_32x32};
 const char *wallpapers_name_en[] = {"M5Paper", "Engine", "Penrose Triangle"};
 const char *wallpapers_name_zh[] = {"M5Paper", "引擎", "彭罗斯三角"};
-const char *wallpapers_name_ja[] = {"M5Paper", "エンジン",
-                                    "ペンローズの三角形"};
+const char *wallpapers_name_ja[] = {"M5Paper", "エンジン", "ペンローズの三角形"};
 uint16_t global_wallpaper        = DEFAULT_WALLPAPER;
 uint8_t global_language          = LANGUAGE_EN;
 String global_wifi_ssid;
@@ -173,28 +168,38 @@ String GetWifiPassword(void) {
 }
 
 bool SyncNTPTime(void) {
-    const char *ntpServer = "time.cloudflare.com";
+    const char *ntpServer    = "time.cloudflare.com";
     const char *ntpServer_zh = "ntp.aliyun.com";
     configTime(global_timezone * 3600, 0, global_language == LANGUAGE_ZH ? ntpServer_zh : ntpServer);
 
     struct tm timeInfo;
-    if (getLocalTime(&timeInfo)) {
-        rtc_time_t time_struct;
-        time_struct.hour = timeInfo.tm_hour;
-        time_struct.min  = timeInfo.tm_min;
-        time_struct.sec  = timeInfo.tm_sec;
-        M5.RTC.setTime(&time_struct);
-        rtc_date_t date_struct;
-        date_struct.week = timeInfo.tm_wday;
-        date_struct.mon  = timeInfo.tm_mon + 1;
-        date_struct.day  = timeInfo.tm_mday;
-        date_struct.year = timeInfo.tm_year + 1900;
-        M5.RTC.setDate(&date_struct);
-        SetTimeSynced(1);
-        return 1;
+
+    unsigned long start = millis();
+    esp_task_wdt_init(12, true);
+    while (!getLocalTime(&timeInfo)) {
+        log_d("Time Syncing");
+        if (millis() - start > 10000) {  // 超时 10 秒
+            log_d("Time Sync failed, server is %s", global_language == LANGUAGE_ZH ? ntpServer_zh : ntpServer);
+            return 0;
+        }
+        delay(100);  // 延迟以避免忙等待
+        esp_task_wdt_reset();
     }
-    log_d("Time Sync failed, server is %s", global_language == LANGUAGE_ZH ? ntpServer_zh : ntpServer);
-    return 0;
+
+    rtc_time_t time_struct;
+    time_struct.hour = timeInfo.tm_hour;
+    time_struct.min  = timeInfo.tm_min;
+    time_struct.sec  = timeInfo.tm_sec;
+    M5.RTC.setTime(&time_struct);
+    rtc_date_t date_struct;
+    date_struct.week = timeInfo.tm_wday;
+    date_struct.mon  = timeInfo.tm_mon + 1;
+    date_struct.day  = timeInfo.tm_mday;
+    date_struct.year = timeInfo.tm_year + 1900;
+    M5.RTC.setDate(&date_struct);
+    SetTimeSynced(1);
+
+    return 1;
 }
 
 uint16_t GetTextSize() {
@@ -249,8 +254,7 @@ void LoadingAnime_32x32_Start(uint16_t x, uint16_t y) {
     uint16_t *pos            = (uint16_t *)calloc(2, sizeof(uint16_t));
     pos[0]                   = x;
     pos[1]                   = y;
-    xTaskCreatePinnedToCore(__LoadingAnime_32x32, "__LoadingAnime_32x32",
-                            16 * 1024, pos, 1, NULL, 0);
+    xTaskCreatePinnedToCore(__LoadingAnime_32x32, "__LoadingAnime_32x32", 16 * 1024, pos, 1, NULL, 0);
 }
 
 void LoadingAnime_32x32_Stop() {
@@ -272,6 +276,5 @@ void Shutdown() {
     M5.disableEXTPower();
     M5.disableMainPower();
     esp_deep_sleep_start();
-    while (1)
-        ;
+    while (1);
 }

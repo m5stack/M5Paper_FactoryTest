@@ -7,9 +7,7 @@
 #define KEY_H 92
 const uint16_t kTimeZoneY = 520;
 
-void key_shutdown_cb(epdgui_args_vector_t &args) {
-    Shutdown();
-}
+void key_shutdown_cb(epdgui_args_vector_t &args) { Shutdown(); }
 
 void key_restart_cb(epdgui_args_vector_t &args) {
     M5.EPD.WriteFullGram4bpp(GetWallpaper());
@@ -62,13 +60,12 @@ void key_synctime_cb(epdgui_args_vector_t &args) {
         title->pushCanvas(0, 8, UPDATE_MODE_NONE);
         tzone->pushCanvas(4, kTimeZoneY, UPDATE_MODE_NONE);
         EPDGUI_Draw(UPDATE_MODE_NONE);
-        while (!M5.TP.available())
-            ;
         M5.EPD.UpdateFull(UPDATE_MODE_GL16);
         return;
     }
     LoadingAnime_32x32_Start(532 - 15 - 32, 220 + 14);
     bool ret = SyncNTPTime();
+    log_d("SyncNTPTime Done");
     LoadingAnime_32x32_Stop();
 
     if (ret == 0) {
@@ -94,8 +91,6 @@ void key_synctime_cb(epdgui_args_vector_t &args) {
     title->pushCanvas(0, 8, UPDATE_MODE_NONE);
     tzone->pushCanvas(4, kTimeZoneY, UPDATE_MODE_NONE);
     EPDGUI_Draw(UPDATE_MODE_NONE);
-    while (!M5.TP.available())
-        ;
     M5.EPD.UpdateFull(UPDATE_MODE_GL16);
 }
 
@@ -163,22 +158,16 @@ Frame_Setting::Frame_Setting(void) {
     key_timezone_minus = new EPDGUI_Button("-", 272, kTimeZoneY, 88, 52);
 
     key_timezone_plus->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0, &_timezone);
-    key_timezone_plus->AddArgs(EPDGUI_Button::EVENT_RELEASED, 1,
-                               key_timezone_reset);
-    key_timezone_plus->Bind(EPDGUI_Button::EVENT_RELEASED,
-                            key_timezone_plus_cb);
+    key_timezone_plus->AddArgs(EPDGUI_Button::EVENT_RELEASED, 1, key_timezone_reset);
+    key_timezone_plus->Bind(EPDGUI_Button::EVENT_RELEASED, key_timezone_plus_cb);
 
     key_timezone_reset->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0, &_timezone);
-    key_timezone_reset->AddArgs(EPDGUI_Button::EVENT_RELEASED, 1,
-                                key_timezone_reset);
-    key_timezone_reset->Bind(EPDGUI_Button::EVENT_RELEASED,
-                             key_timezone_reset_cb);
+    key_timezone_reset->AddArgs(EPDGUI_Button::EVENT_RELEASED, 1, key_timezone_reset);
+    key_timezone_reset->Bind(EPDGUI_Button::EVENT_RELEASED, key_timezone_reset_cb);
 
     key_timezone_minus->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0, &_timezone);
-    key_timezone_minus->AddArgs(EPDGUI_Button::EVENT_RELEASED, 1,
-                                key_timezone_reset);
-    key_timezone_minus->Bind(EPDGUI_Button::EVENT_RELEASED,
-                             key_timezone_minus_cb);
+    key_timezone_minus->AddArgs(EPDGUI_Button::EVENT_RELEASED, 1, key_timezone_reset);
+    key_timezone_minus->Bind(EPDGUI_Button::EVENT_RELEASED, key_timezone_minus_cb);
 
     if (language == LANGUAGE_JA) {
         _key_wallpaper->setBMPButton("  壁紙", "\u25B6",
@@ -187,8 +176,7 @@ Frame_Setting::Frame_Setting(void) {
                                     ImageResource_item_icon_language_32x32);
         _key_syncntp->setBMPButton("  時間シンクロ", "",
                                    ImageResource_item_icon_ntptime_32x32);
-        _key_restart->setBMPButton("  再起動", "",
-                                   ImageResource_item_icon_restart_32x32);
+        _key_restart->setBMPButton("  再起動", "", ImageResource_item_icon_restart_32x32);
         _key_shutdown->setBMPButton("  電源オフ", "",
                                     ImageResource_item_icon_shutdown_32x32);
         _timezone_canvas->drawString("時間帯 (UTC)", 15, 35);
@@ -201,10 +189,8 @@ Frame_Setting::Frame_Setting(void) {
                                     ImageResource_item_icon_language_32x32);
         _key_syncntp->setBMPButton("  同步时间", "",
                                    ImageResource_item_icon_ntptime_32x32);
-        _key_restart->setBMPButton("  重启", "",
-                                   ImageResource_item_icon_restart_32x32);
-        _key_shutdown->setBMPButton("  关机", "",
-                                    ImageResource_item_icon_shutdown_32x32);
+        _key_restart->setBMPButton("  重启", "", ImageResource_item_icon_restart_32x32);
+        _key_shutdown->setBMPButton("  关机", "", ImageResource_item_icon_shutdown_32x32);
         _timezone_canvas->drawString("时区 (UTC)", 15, 35);
         exitbtn("主页");
         _canvas_title->drawString("设置", 270, 34);
@@ -227,12 +213,10 @@ Frame_Setting::Frame_Setting(void) {
     _key_exit->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0, (void *)(&_is_run));
     _key_exit->Bind(EPDGUI_Button::EVENT_RELEASED, &Frame_Base::exit_cb);
 
-    _key_language->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0,
-                           (void *)(&_is_run));
+    _key_language->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0, (void *)(&_is_run));
     _key_language->Bind(EPDGUI_Button::EVENT_RELEASED, &key_language_cb);
 
-    _key_wallpaper->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0,
-                            (void *)(&_is_run));
+    _key_wallpaper->AddArgs(EPDGUI_Button::EVENT_RELEASED, 0, (void *)(&_is_run));
     _key_wallpaper->Bind(EPDGUI_Button::EVENT_RELEASED, &key_wallpaper_cb);
 
     _key_shutdown->Bind(EPDGUI_Button::EVENT_RELEASED, &key_shutdown_cb);
